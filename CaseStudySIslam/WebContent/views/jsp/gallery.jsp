@@ -14,5 +14,21 @@
 		<a href="${pageContext.request.contextPath}/gallery/upload">Create a new post</a>
 	</c:if>
 	<p>${pageContext.request.userPrincipal.name}</p>
+	
+	<div>
+		<table>
+			<c:if test="${posts.size() > 0}">
+				<c:forEach var="post" items="${posts}">
+					<tr>
+						<td>
+							<img src="${post.getPicture().getPath()}"/>
+							<br>
+							<p>${post.getDescription()}</p>
+						</td>
+					</tr>
+				</c:forEach>
+			</c:if>
+		</table>
+	</div>
 </body>
 </html>

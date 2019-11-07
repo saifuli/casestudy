@@ -37,7 +37,7 @@ public class LoginController {
 	@RequestMapping("/login")
 	public void initAdmin(Credential cred) {
 
-		Credential credential = credentialRepository.findByEmail(cred.getEmail());
+		Credential credential = credentialRepository.findCredentialByEmail(cred.getEmail());
 
 		
 	}
@@ -53,7 +53,7 @@ public class LoginController {
 	@RequestMapping(value = "/loginProcess", method = RequestMethod.POST)
 	public ModelAndView loginProcess(@Valid @ModelAttribute("loginForm") Credential cred, BindingResult br) {
 		ModelAndView mav = null;
-		Credential credential = credentialRepository.findByEmail(cred.getEmail());
+		Credential credential = credentialRepository.findCredentialByEmail(cred.getEmail());
 		System.out.println("in loginprocess");
 		
 		System.out.println("login name: " + cred.getUsername());

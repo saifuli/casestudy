@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.casestudy.dao.UserDAO;
 import com.casestudy.model.Authorities;
 import com.casestudy.model.Credential;
 import com.casestudy.model.User;
@@ -34,9 +35,14 @@ public class UserRegistrationController {
 
 	@Autowired
 	CredentialService credentialService;
-
+	
 	@Autowired
 	CredentialRepository credentialRepository;
+
+	
+	
+	@Autowired
+	UserDAO userDAO;
 	
 //	@Autowired
 //	UserService userService;
@@ -62,7 +68,7 @@ public class UserRegistrationController {
 	public ModelAndView loginProcess(@Valid @ModelAttribute("userCredentialFormObj") Credential cred,
 			@ModelAttribute("userFormObj") User user, BindingResult br,
 			@RequestParam("confPassword") String confPassword) {
-		Credential credential = credentialRepository.findByEmail(cred.getEmail());
+		Credential credential = credentialRepository.findCredentialByEmail(cred.getEmail());
 		ModelAndView mav = null;
 		System.out.println("outside");
 		if (!br.hasErrors() || (br.getFieldValue("user") == null)) {
@@ -98,7 +104,7 @@ public class UserRegistrationController {
 					
 					System.out.println(credential.toString());
 
-					credentialService.saveUser(credential);
+					credentialService.saveCredential(credential);
 					
 
 					System.out.println(credential.toString());
@@ -107,7 +113,7 @@ public class UserRegistrationController {
 					
 					System.out.println("registering");
 					mav = new ModelAndView("registerConfirmation");
-					mav.addObject("userCredential", credentialRepository.findByEmail(credential.getEmail()));
+					mav.addObject("userCredential", credentialService.loadUserByUsername(credential.getEmail()));
 					mav.addObject("message", "Credential successfully created!");
 					return mav;
 				} else {
@@ -120,7 +126,7 @@ public class UserRegistrationController {
 						credential.setPassword(cred.getPassword());
 						System.out.println(credential.toString());
 					}
-					credentialService.saveUser(credential);
+					credentialService.saveCredential(credential);
 					mav = new ModelAndView("redirect:/user?u=" + credential.getEmail());
 				}
 			} else {

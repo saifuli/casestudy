@@ -21,8 +21,9 @@ public class CredentialService implements UserDetailsService{
 	@Autowired
 	CredentialRepository credentialRepository;
 	
-	public void saveUser(Credential cred) {
+	public boolean saveCredential(Credential cred) {
 		credentialRepository.save(cred);
+		return credentialRepository.findCredentialByEmail(cred.getEmail()) != null;
 //		return userRepository.findByUsername(user.getUsername());
 	}
 	
@@ -30,7 +31,7 @@ public class CredentialService implements UserDetailsService{
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
 		System.out.println(email + "*************************");
-		Credential credential = credentialRepository.findByEmail(email);
+		Credential credential = credentialRepository.findCredentialByEmail(email);
 		System.out.println(credential);
 		UserBuilder builder = null;
 		if (credential != null) {
@@ -44,6 +45,12 @@ public class CredentialService implements UserDetailsService{
 			throw new UsernameNotFoundException("User Not Found!");
 		return builder.build();
 	}
+	
+//	public List<Credential> findAllCredentials(){
+//        List<Credential> credentialsList = new ArrayList<>();
+//        credentialRepository.findAll().forEach(credentialsList::add);
+//        return credentialsList;
+//    }
 
 	
 

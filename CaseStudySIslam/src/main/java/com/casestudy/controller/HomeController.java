@@ -1,9 +1,18 @@
 package com.casestudy.controller;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.security.Principal;
+import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -13,18 +22,36 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import com.casestudy.config.BCrpytPasswordEncoderEdited;
 
+import com.casestudy.config.BCrpytPasswordEncoderEdited;
+import com.casestudy.dao.PictureDAO;
+import com.casestudy.dao.PostDAO;
+import com.casestudy.dao.UserDAO;
 import com.casestudy.model.Credential;
 import com.casestudy.model.Picture;
 import com.casestudy.model.Post;
+import com.casestudy.model.User;
 import com.casestudy.repository.CredentialRepository;
+import com.casestudy.repository.UserRepository;
 
+
+
+@PropertySource("classpath:app.properties")
 @Controller
 public class HomeController {
 
 	@Autowired
+	Environment environment;
+	
+	@Autowired
 	CredentialRepository credentialRepository;
+	
+	@Autowired
+	UserDAO userDAO;
+
+	
+	@Autowired
+	PostDAO postDAO;
 
 	@RequestMapping("/")
 	public ModelAndView getLanding() {
@@ -38,7 +65,7 @@ public class HomeController {
 		if (principal.getName() == null)
 			return new ModelAndView("redirect:/login");
 		System.out.println(principal.getName());
-		Credential credential = credentialRepository.findByEmail(principal.getName());
+		Credential credential = credentialRepository.findCredentialByEmail(principal.getName());
 		mav.addObject("credential", credential);
 		return mav;
 	}
@@ -46,6 +73,8 @@ public class HomeController {
 	@RequestMapping("/gallery")
 	public ModelAndView getGallery() {
 		ModelAndView mav = new ModelAndView("gallery");
+		List<Post> posts = postDAO.findAllPosts();
+		mav.addObject("posts", posts);
 		return mav;
 	}
 
@@ -59,24 +88,65 @@ public class HomeController {
 
 	@RequestMapping(value = "/gallery/processUpload", method = RequestMethod.POST)
 	public ModelAndView postUpload(@RequestParam("description") String description,
-			@RequestParam("file") MultipartFile file, @ModelAttribute("picObj") Picture picObj,
+			@RequestParam("file") MultipartFile file, Principal principal,
 			RedirectAttributes redir) {
 		ModelAndView mav = new ModelAndView("redirect:/gallery");
+		Picture picture = new Picture();
+		Post post = new Post();
+		System.out.println();
 		if (!file.isEmpty()) {
 			System.out.println(file.getOriginalFilename());
 			System.out.println(description);
+			System.out.println(Paths.get(".").toAbsolutePath());
 			String rootPath = "\\CaseStudySIslam\\WebContent\\images\\uploads";
 			System.out.println(rootPath);
 			System.out.println(File.separator);
-			File dir = new File(rootPath);
-			if (!dir.exists())
-				dir.mkdirs();
-			String name = new BCrpytPasswordEncoderEdited().encode(file.getOriginalFilename());
-			System.out.println("in controller: " + name);
-			System.out.println(name.length());
-//			File f = new File(rootPath+File.separator+name);
-			
+			try {
+				File dir = new File(environment.getRequiredProperty("filepath"));
+				if (!dir.exists())
+					dir.mkdirs();
+				byte[] fileBytes = file.getBytes();
+				String ext = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf('.'));
+				String name = new BCrpytPasswordEncoderEdited().encode(file.getOriginalFilename());
+				System.out.println("in controller: " + name);
+				System.out.println(name.length());
+//				String path = rootPath + File.separator + name + ext;
+				String path = environment.getRequiredProperty("filepath")+File.separator+name+ext;
+				System.out.println("path: " + path);
+				picture.setName(name);
+				picture.setPath(path);
+				post.setDescription(description);
+				post.setPicture(picture);
+				post.setTimestamp(new Date());
+				picture.setPost(post);
+				
+				User user = credentialRepository.findCredentialByEmail(principal.getName()).getUser();
+				System.out.println(post.toString());
+				postDAO.addPost(post);
+				post.setAuthor(user);
+				user.getPosts().add(post);
+				System.out.println(user.toString());
+				
+				File f = new File(path);
+				BufferedOutputStream bostream = new BufferedOutputStream(new FileOutputStream(f));
+				bostream.write(fileBytes);
+				bostream.close();
+				System.out.println("Saved file.");
+				System.out.println(path);
+				System.out.println(post.toString());
+				
+				postDAO.addPost(post);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.out.println("File " + file.getOriginalFilename() + " " + picture.getName() + " not found.");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.out.println("File could not write to server.");
+			}
 		}
+		redir.addFlashAttribute("post", post);
 		return mav;
 	}
 

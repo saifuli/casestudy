@@ -48,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		http.authorizeRequests()
 			.and()
 			.formLogin()
-			.loginPage("/login").loginProcessingUrl("/loginAction").defaultSuccessUrl("/home", true).failureUrl("/login?error=true").permitAll()
+			.loginPage("/login").loginProcessingUrl("/loginAction").defaultSuccessUrl("/home", true).failureUrl("/login").permitAll()
 			.and()
 			.logout().logoutSuccessUrl("/landing").permitAll()
 			.and()

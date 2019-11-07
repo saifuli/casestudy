@@ -731,8 +731,6 @@ public class BCryptEdited {
 	 */
 	public static String hashpw(String password, String salt) {
 		byte passwordb[];
-		System.out.println(password);
-		System.out.println(salt);
 		passwordb = password.getBytes(StandardCharsets.US_ASCII);
 
 		return hashpw(passwordb, salt);
@@ -803,14 +801,7 @@ public class BCryptEdited {
 		rs.append("$");
 		encode_base64(saltb, saltb.length, rs);
 		encode_base64(hashed, bf_crypt_ciphertext.length * 4 - 1, rs);
-		System.out.println("bcrypt rs: " + rs.toString());
-		System.out.println("bcrypt salt: " + salt);
-		String name = rs.toString().replaceAll(salt, "");
-		System.out.println("bcrypt rs after replaceAll: " + name);
-		name = name.substring(salt.length());
-		System.out.println("bcrypt rs after substring: " + name);
-		name = name.replaceAll("[^a-zA-Z0-9]", "");
-		System.out.println("bcrypt rs after replaceAll after substring: " + name);
+		
 		return rs.toString().substring(salt.length()).replaceAll("[^a-zA-Z0-9]", "");
 	}
 
