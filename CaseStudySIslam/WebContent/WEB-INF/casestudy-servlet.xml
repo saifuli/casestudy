@@ -17,6 +17,13 @@
 		<property name="prefix" value="/views/jsp/"></property>
 		<property name="suffix" value=".jsp"></property>
 	</bean>
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+
+		 <!-- setting maximum upload size -->
+		<property name="maxUploadSize" value="100000000" />
+
+	</bean>
 	<mvc:view-controller path="/landing" view-name="landing"/>
 	<mvc:resources mapping="/images/*" location="/images/" />
 </beans>

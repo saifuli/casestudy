@@ -16,7 +16,7 @@
 </style>
 </head>
 <body>
-	<jsp:include page="menu.jsp"/>
+	<jsp:include page="menu.jsp" />
 	<%-- <p>${message}</p>
 	<form:form id="userCredentialFormObj"
 		modelAttribute="userCredentialFormObj"
@@ -76,12 +76,25 @@
 		</table>
 
 	</form:form> --%>
-	 <form:form method = "POST" modelAttribute = "fileUpload"
-         enctype = "multipart/form-data">
-         Please select a file to upload : 
-         <input type = "file" name = "file" />
-         <input type = "submit" value = "upload" />
-      </form:form>
+	<form:form method="POST" id="picObj" modelAttribute="picObj"
+		action="${pageContext.request.contextPath}/gallery/processUpload"
+		enctype="multipart/form-data">
+		<table>
+			<tr>
+				<td>File to upload: <input type="file" name="file"></td>
+			</tr>
+
+
+			<tr>
+				<td><textarea rows="7" cols="70" name="description"
+						id="description" placeholder="Describe the picture"></textarea></td>
+			</tr>
+
+			<tr>
+				<td><form:button name="createPost" id="createPost">Create Post</form:button></td>
+			</tr>
+		</table>
+	</form:form>
 
 </body>
 </html>
