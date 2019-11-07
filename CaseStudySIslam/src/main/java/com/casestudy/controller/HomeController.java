@@ -1,5 +1,6 @@
 package com.casestudy.controller;
 
+import java.io.File;
 import java.security.Principal;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.casestudy.config.BCrpytPasswordEncoderEdited;
 
 import com.casestudy.model.Credential;
 import com.casestudy.model.Picture;
@@ -63,7 +65,17 @@ public class HomeController {
 		if (!file.isEmpty()) {
 			System.out.println(file.getOriginalFilename());
 			System.out.println(description);
-			System.out.println(this.getClass().getClassLoader().getResource("").getPath());
+			String rootPath = "\\CaseStudySIslam\\WebContent\\images\\uploads";
+			System.out.println(rootPath);
+			System.out.println(File.separator);
+			File dir = new File(rootPath);
+			if (!dir.exists())
+				dir.mkdirs();
+			String name = new BCrpytPasswordEncoderEdited().encode(file.getOriginalFilename());
+			System.out.println("in controller: " + name);
+			System.out.println(name.length());
+//			File f = new File(rootPath+File.separator+name);
+			
 		}
 		return mav;
 	}
