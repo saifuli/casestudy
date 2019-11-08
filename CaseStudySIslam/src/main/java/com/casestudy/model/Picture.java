@@ -3,6 +3,7 @@ package com.casestudy.model;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,7 +26,7 @@ public class Picture {
 	@Column(name = "path", nullable = false)
 	private String path;
 	
-	@OneToOne (mappedBy = "picture")
+	@OneToOne (mappedBy = "picture", fetch = FetchType.LAZY)
 	private Post post;
 
 	public long getId() {

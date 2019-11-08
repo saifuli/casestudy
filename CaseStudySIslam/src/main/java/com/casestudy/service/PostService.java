@@ -57,4 +57,15 @@ public class PostService implements PostDAO {
 		posts.forEach(postsList::add);
 		return postsList;
 	}
+
+	@Override
+	public Post findPostById(long id) {
+		return postRepository.findById(id).get();
+	}
+
+	@Override
+	public void deletePostById(long id) {
+		// TODO Auto-generated method stub
+		postRepository.deleteById(id);
+	}
 }

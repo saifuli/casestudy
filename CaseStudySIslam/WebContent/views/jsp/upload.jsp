@@ -91,7 +91,9 @@
 			</tr>
 
 			<tr>
-				<td><form:button name="createPost" id="createPost">Create Post</form:button></td>
+
+					<td><form:button name="createPost" id="createPost">Create Post</form:button></td>
+
 			</tr>
 		</table>
 	</form:form>

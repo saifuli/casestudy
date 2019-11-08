@@ -89,7 +89,7 @@ public class HomeController {
 	}
 
 	@RequestMapping(value = "/gallery/processUpload", method = RequestMethod.POST)
-	public ModelAndView postUpload(@RequestParam("description") String description,
+	public ModelAndView postUpload(String description,
 			@RequestParam("file") MultipartFile file, Principal principal,
 			RedirectAttributes redir) {
 		ModelAndView mav = new ModelAndView("redirect:/gallery");
@@ -131,8 +131,8 @@ public class HomeController {
 //				System.out.println("adding picture: " + pictureDAO.addPicture(picture));
 //				
 //				Picture pic = pictureDAO.findPictureByName(picture.getName());
-				post.setPicture(picture);
-				picture.setPost(post);
+//				post.setPicture(picture);
+//				picture.setPost(post);
 				
 				System.out.println(post.toString());
 				System.out.println(picture.toString());
