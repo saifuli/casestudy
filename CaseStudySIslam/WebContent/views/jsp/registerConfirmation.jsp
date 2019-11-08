@@ -9,6 +9,6 @@
 <body>
 	<jsp:include page="menu.jsp"/>
 	<p>${message}</p>
-	<p>Thank you for registering to THE GALLERY ${userCredential.getUser().getName()}</p>
+	<p>Thank you for registering to THE GALLERY ${credential.getUser().getName()}</p>
 </body>
 </html>

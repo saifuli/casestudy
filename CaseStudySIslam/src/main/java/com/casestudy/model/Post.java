@@ -31,18 +31,18 @@ public class Post {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	private User author;
 	
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Picture picture;
 	
 	@Column(name = "description")
 	private String description;
 	
-	@Column(name = "comments")
 	@OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@Column(name = "comments")
 	private List<Comment> comments;
 	
 	private int views;

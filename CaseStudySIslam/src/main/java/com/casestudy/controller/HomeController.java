@@ -49,6 +49,8 @@ public class HomeController {
 	@Autowired
 	UserDAO userDAO;
 
+	@Autowired
+	PictureDAO pictureDAO;
 	
 	@Autowired
 	PostDAO postDAO;
@@ -113,20 +115,34 @@ public class HomeController {
 //				String path = rootPath + File.separator + name + ext;
 				String path = environment.getRequiredProperty("filepath")+File.separator+name+ext;
 				System.out.println("path: " + path);
-				picture.setName(name);
-				picture.setPath(path);
-				post.setDescription(description);
-				post.setPicture(picture);
-				post.setTimestamp(new Date());
-				picture.setPost(post);
+				
+				picture.setName(name); picture.setPath(path); picture.setPost(post);
 				
 				User user = credentialRepository.findCredentialByEmail(principal.getName()).getUser();
-				System.out.println(post.toString());
-				postDAO.addPost(post);
-				post.setAuthor(user);
 				user.getPosts().add(post);
+
+				post.setDescription(description); post.setTimestamp(new Date());
+				
+				post.setPicture(picture);				
+				post.setAuthor(user);
+//				picture.setPost(post);
+				
+
+//				System.out.println("adding picture: " + pictureDAO.addPicture(picture));
+//				
+//				Picture pic = pictureDAO.findPictureByName(picture.getName());
+				post.setPicture(picture);
+				picture.setPost(post);
+				
+				System.out.println(post.toString());
+				System.out.println(picture.toString());
 				System.out.println(user.toString());
 				
+				System.out.println("********************************* - 1");
+				
+				postDAO.addPost(post);
+				
+				System.out.println("********************************* - 2");
 				File f = new File(path);
 				BufferedOutputStream bostream = new BufferedOutputStream(new FileOutputStream(f));
 				bostream.write(fileBytes);
@@ -135,7 +151,6 @@ public class HomeController {
 				System.out.println(path);
 				System.out.println(post.toString());
 				
-				postDAO.addPost(post);
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

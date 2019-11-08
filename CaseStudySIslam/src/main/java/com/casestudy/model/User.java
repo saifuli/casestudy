@@ -31,7 +31,7 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 //	@PrimaryKeyJoinColumn(name = "id", referencedColumnName = "id")
 	@MapsId
 	@OnDelete(action = OnDeleteAction.CASCADE)

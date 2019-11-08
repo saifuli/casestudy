@@ -27,7 +27,7 @@ import com.casestudy.model.Credential;
 import com.casestudy.model.User;
 import com.casestudy.repository.CredentialRepository;
 import com.casestudy.service.CredentialService;
-import com.casestudy.service.LoginService;
+
 
 @Transactional
 @Controller
@@ -113,7 +113,7 @@ public class UserRegistrationController {
 					
 					System.out.println("registering");
 					mav = new ModelAndView("registerConfirmation");
-					mav.addObject("userCredential", credentialService.loadUserByUsername(credential.getEmail()));
+					mav.addObject("credential", credentialRepository.findCredentialByEmail(credential.getEmail()));
 					mav.addObject("message", "Credential successfully created!");
 					return mav;
 				} else {

@@ -3,6 +3,7 @@ package com.casestudy.service;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -35,7 +36,7 @@ public class CredentialService implements UserDetailsService{
 		System.out.println(credential);
 		UserBuilder builder = null;
 		if (credential != null) {
-			builder = org.springframework.security.core.userdetails.User.withUsername(email);
+			builder = User.withUsername(email);
 			builder.password(credential.getPassword());
 			
 			String[] authorities = credential.getAuthorities().stream().map(a-> a.getAuthority()).toArray(String[]::new);

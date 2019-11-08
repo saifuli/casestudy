@@ -21,6 +21,7 @@
 				<c:forEach var="post" items="${posts}">
 					<tr>
 						<td>
+							<p>${post.getPicture().getPath()}</p>
 							<img src="${post.getPicture().getPath()}"/>
 							<br>
 							<p>${post.getDescription()}</p>

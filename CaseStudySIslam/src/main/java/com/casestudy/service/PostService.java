@@ -23,8 +23,14 @@ public class PostService implements PostDAO {
 	
 	@Override
 	public void addPost(Post post) {
+		System.out.println("before adding post");
 		postRepository.save(post);
 		System.out.println("after adding post");
+		List<Post> postsList = findAllPosts();
+		postsList.forEach(p -> {
+			if (p.getDescription().equals(post.getDescription()))
+				System.out.println("saved");
+		});
 	}
 
 	@Override

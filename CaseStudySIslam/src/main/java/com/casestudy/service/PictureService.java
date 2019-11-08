@@ -18,6 +18,7 @@ public class PictureService implements PictureDAO{
 	@Override
 	public boolean addPicture(Picture picture) {
 		pictureRepository.save(picture);
+		System.out.println("after pictureservice add");
 		return findPictureByName(picture.getName()) != null;
 	}
 
