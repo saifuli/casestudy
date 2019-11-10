@@ -1,22 +1,28 @@
 package com.casestudy.controller;
 
 import java.security.Principal;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.casestudy.dao.CommentDAO;
 import com.casestudy.dao.PictureDAO;
 import com.casestudy.dao.PostDAO;
+import com.casestudy.model.Credential;
 import com.casestudy.model.Picture;
 import com.casestudy.model.Post;
 import com.casestudy.service.CredentialService;
-import com.sun.org.glassfish.gmbal.Description;
 
 @Controller
 @Transactional
@@ -31,13 +37,40 @@ public class PostController {
 	@Autowired
 	PictureDAO pictureDAO;
 	
+	@Autowired
+	CommentDAO commentDAO;
+	
+	@RequestMapping(value = "/gallery/{picName}", method = RequestMethod.GET)
+	public ModelAndView getPostInfo(@PathVariable("picName") String picName, Principal principal, Model model) {
+		ModelAndView mav = null;
+		mav = new ModelAndView("post");
+		Picture picture = pictureDAO.findPictureByName(picName);
+		Post post = postDAO.findPostById(picture.getId());
+		if (model.getAttribute("viewsUpdate") == null)
+			post.setViews(post.getViews()+1);
+		Credential credential = null;
+
+		mav.addObject("post", postDAO.findPostById(picture.getId()));
+		mav.addObject("picture", picture);
+		if (principal != null) {
+			credential = credentialService.findCredentialByEmail(principal.getName());
+			Set<String> authorities = new HashSet<String>(Arrays.asList(credential.getAuthorities().stream().map(a-> a.getAuthority()).toArray(String[]::new)));
+			if (authorities.contains("ROLE_ADMIN")) {
+				System.out.println("CONTAINS ADMIN");
+				mav.addObject("role", "admin");
+			}
+			
+			mav.addObject("credential", credential);
+		}
+		return mav;
+	}
+	
 	@RequestMapping(value = "/gallery/edit/{picName}", method = RequestMethod.GET)
-	public ModelAndView editUserInfo(@PathVariable("picName") String picName) {
+	public ModelAndView editPostInfo(@PathVariable("picName") String picName) {
 		ModelAndView mav = null;
 		mav = new ModelAndView("editPost");
 		Picture picture = pictureDAO.findPictureByName(picName);
-		System.out.println(picture.toString());
-		System.out.println(postDAO.findPostById(picture.getId()).toString());
+
 		mav.addObject("post", postDAO.findPostById(picture.getId()));
 		mav.addObject("picture", picture);
 		mav.addObject("action", "edit");
@@ -45,22 +78,20 @@ public class PostController {
 	}
 	
 	@RequestMapping(value = "/gallery/edit/{picName}", method = RequestMethod.POST)
-	public ModelAndView submitEditUserInfo(@PathVariable("picName") String picName,
-			@ModelAttribute("post") Post post, @ModelAttribute("picture") Picture picture) {
+	public ModelAndView submitEditPostInfo(@PathVariable("picName") String picName,
+			@ModelAttribute("post") Post post, @ModelAttribute("picture") Picture picture, RedirectAttributes redir) {
 		ModelAndView mav = null;
-		mav = new ModelAndView("redirect:/gallery");
-		System.out.println(post.toString());
+		mav = new ModelAndView("redirect:/gallery/"+picName);
+		redir.addFlashAttribute("redirect", "redirect");
 		Post p = postDAO.findPostById(pictureDAO.findPictureByName(picName).getId());
 		p.setDescription(post.getDescription());
-		postDAO.addPost(p);
+		
+		redir.addFlashAttribute("viewsUpdate", "viewsUpdate");
 		return mav;
 	}
 	
 	@RequestMapping(value = "/gallery/delete/{picName}", method = RequestMethod.POST)
 	public ModelAndView deletePost(@PathVariable("picName") String picName, Principal principal) {
-		System.out.println("---------------------------------------------------------- delete");
-		System.out.println(picName);
-
 		Picture picture = pictureDAO.findPictureByName(picName);
 		postDAO.deletePostById(picture.getId());
 		

@@ -22,14 +22,9 @@
 				<c:forEach var="post" items="${posts}">
 					<tr>
 						<td>
-							<p>${post.getPicture().getPath()}</p> <img
-							src="${post.getPicture().getPath()}" /> <br>
-							<p>${post.getDescription()}</p> <%-- <c:if test="${post.getLikes() > 0}"> --%>
-							<p>Likes: ${post.getLikes()}</p> <a
-							href="${pageContext.request.contextPath}/gallery/edit/${post.getPicture().getName()}">Edit</a>
-							<form action="${pageContext.request.contextPath}/gallery/delete/${post.getPicture().getName()}" method="post">
-								<input type="submit" value="Delete" />
-							</form>
+							<a
+							href="${pageContext.request.contextPath}/gallery/${post.getPicture().getName()}">${post.getId()}</a>
+	
 						</td>
 					</tr>
 				</c:forEach>

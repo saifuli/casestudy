@@ -13,7 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
+
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
@@ -135,8 +135,8 @@ public class User {
 		this.numOfComments = numOfComments;
 	}
 	
-	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-	}
+//	@Override
+//	public String toString() {
+//		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+//	}
 }

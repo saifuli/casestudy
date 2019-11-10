@@ -31,6 +31,12 @@ public class Authorities {
 	@JoinColumn(name = "credential_id")
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Credential credential;
+	
+	public Authorities() {}
+	
+	public Authorities(String authority) {
+		this.authority = authority;
+	}
 
 	public String getAuthority() {
 		return authority;
@@ -48,10 +54,10 @@ public class Authorities {
 		this.credential = credential;
 	}
 	
-	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-	}
+//	@Override
+//	public String toString() {
+//		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+//	}
 	
 }
 
@@ -80,5 +86,11 @@ class AuthoritiesId implements Serializable {
 
 	public void setCredential(Credential credential) {
 		this.credential = credential;
+	}
+	
+	public boolean equals(Authorities authorities) {
+		if (this.getAuthority().equals(authorities.getAuthority()))
+			return true;
+		return false;
 	}
 }

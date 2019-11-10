@@ -118,9 +118,9 @@ public class Credential {
 		this.authorities = authorities;
 	}
 	
-	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-	}
+//	@Override
+//	public String toString() {
+//		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+//	}
 	
 }

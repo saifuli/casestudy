@@ -6,5 +6,6 @@ import antlr.collections.List;
 
 public interface CommentDAO {
 	void addComment(Comment comment);
-	void deleteComment(Comment comment);
+	void deleteCommentById(long id);
+	
 }

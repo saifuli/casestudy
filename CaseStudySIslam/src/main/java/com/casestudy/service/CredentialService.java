@@ -2,6 +2,8 @@ package com.casestudy.service;
 
 
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.User.UserBuilder;
@@ -10,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.casestudy.model.Authorities;
 import com.casestudy.model.Credential;
 import com.casestudy.repository.CredentialRepository;
 
@@ -29,7 +32,7 @@ public class CredentialService implements UserDetailsService{
 	}
 	
 	public Credential findCredentialByEmail(String email) {
-		return credentialRepository.findCredentialByUsername(email);
+		return credentialRepository.findCredentialByEmail(email);
 	}
 	
 	@Override
@@ -44,6 +47,9 @@ public class CredentialService implements UserDetailsService{
 			builder.password(credential.getPassword());
 			
 			String[] authorities = credential.getAuthorities().stream().map(a-> a.getAuthority()).toArray(String[]::new);
+
+			
+			
 			builder.authorities(authorities);
 		}
 		else
@@ -51,12 +57,4 @@ public class CredentialService implements UserDetailsService{
 		return builder.build();
 	}
 	
-//	public List<Credential> findAllCredentials(){
-//        List<Credential> credentialsList = new ArrayList<>();
-//        credentialRepository.findAll().forEach(credentialsList::add);
-//        return credentialsList;
-//    }
-
-	
-
 }

@@ -86,12 +86,6 @@ public class UserRegistrationController {
 					authorities2.add(authorities);
 					
 					credential = new Credential(cred.getEmail(), cred.getUsername(), hashPass, authorities2, new Date());
-					
-//					credential.setEmail(cred.getEmail());
-//					credential.setUsername(cred.getUsername());	
-//					credential.setPassword(cred.getPassword());
-//					credential.setJoinDate(new Date());
-//					credential.setAuthorities(authorities2);
 
 					authorities2.remove(authorities);
 					authorities.setCredential(credential);
@@ -102,14 +96,9 @@ public class UserRegistrationController {
 					u.setCredential(credential);
 					credential.setUser(u);
 					
-					System.out.println(credential.toString());
 
 					credentialService.saveCredential(credential);
 					
-
-					System.out.println(credential.toString());
-//					System.out.println(tempCredential.toString());
-//					loginService.updateCredential(tempCredential);
 					
 					System.out.println("registering");
 					mav = new ModelAndView("registerConfirmation");
