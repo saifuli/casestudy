@@ -34,12 +34,10 @@ import com.casestudy.model.User;
 import com.casestudy.repository.CredentialRepository;
 import com.casestudy.repository.UserRepository;
 
-
-
 @PropertySource("classpath:app.properties")
 @Controller
 public class HomeController {
-	
+
 	@Autowired
 	CredentialRepository credentialRepository;
 
@@ -60,16 +58,12 @@ public class HomeController {
 		return mav;
 	}
 
-	
-
-
 	@RequestMapping("/contactus")
 	public ModelAndView getContact() {
 		System.out.println("In contact!");
 		ModelAndView mav = new ModelAndView("contact");
 		return mav;
 	}
-
 
 	@RequestMapping("/403")
 	public ModelAndView get403Page(Principal principal) {

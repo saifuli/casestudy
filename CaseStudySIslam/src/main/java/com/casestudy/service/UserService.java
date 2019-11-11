@@ -11,20 +11,18 @@ import com.casestudy.repository.UserRepository;
 public class UserService implements UserDAO {
 	@Autowired
 	UserRepository userRepository;
-	
+
 	@Override
 	public void addUser(User user) {
 		userRepository.save(user);
-		
+
 	}
 
 	@Override
 	public void deleteUser(User user) {
 		// TODO Auto-generated method stub
 		userRepository.delete(user);
-		
-	}
 
-	
+	}
 
 }

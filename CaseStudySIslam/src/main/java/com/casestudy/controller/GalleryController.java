@@ -34,19 +34,19 @@ import com.casestudy.repository.CredentialRepository;
 public class GalleryController {
 	@Autowired
 	Environment environment;
-	
+
 	@Autowired
 	CredentialRepository credentialRepository;
-	
+
 	@Autowired
 	UserDAO userDAO;
 
 	@Autowired
 	PictureDAO pictureDAO;
-	
+
 	@Autowired
 	PostDAO postDAO;
-	
+
 	@RequestMapping("/gallery")
 	public ModelAndView getGallery() {
 		ModelAndView mav = new ModelAndView("gallery");
@@ -64,8 +64,7 @@ public class GalleryController {
 	}
 
 	@RequestMapping(value = "/gallery/processUpload", method = RequestMethod.POST)
-	public ModelAndView postUpload(String description,
-			@RequestParam("file") MultipartFile file, Principal principal,
+	public ModelAndView postUpload(String description, @RequestParam("file") MultipartFile file, Principal principal,
 			RedirectAttributes redir) {
 		ModelAndView mav = new ModelAndView("redirect:/gallery");
 		Picture picture = new Picture();
@@ -82,28 +81,29 @@ public class GalleryController {
 				String name = new BCrpytPasswordEncoderEdited().encode(file.getOriginalFilename());
 
 //				String path = rootPath + File.separator + name + ext;
-				String path = environment.getRequiredProperty("filepath")+File.separator+name+ext;
+				String path = environment.getRequiredProperty("filepath") + File.separator + name + ext;
 
-				picture.setName(name); picture.setPath(path); picture.setPost(post);
-				
+				picture.setName(name);
+				picture.setPath(path);
+				picture.setPost(post);
+
 				User user = credentialRepository.findCredentialByEmail(principal.getName()).getUser();
 				user.getPosts().add(post);
-				user.setNumOfPosts(user.getNumOfComments()+1);
+				user.setNumOfPosts(user.getNumOfComments() + 1);
 
-				post.setDescription(description); post.setTimestamp(new Date());
-				
-				post.setPicture(picture);				
+				post.setDescription(description);
+				post.setTimestamp(new Date());
+
+				post.setPicture(picture);
 				post.setAuthor(user);
 
 				postDAO.addPost(post);
-				
 
 				File f = new File(path);
 				BufferedOutputStream bostream = new BufferedOutputStream(new FileOutputStream(f));
 				bostream.write(fileBytes);
 				bostream.close();
 
-				
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

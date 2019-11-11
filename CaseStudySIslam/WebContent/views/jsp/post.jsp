@@ -49,13 +49,14 @@
 							method="get">
 							<input type="submit" value="Edit Comment" />
 						</form:form>
-						</c:if>
-						<c:if test="${comment.getAuthor().getId() == credential.getId() || role == 'admin'}">
-							<form
-								action="${pageContext.request.contextPath}/gallery/${post.getPicture().getName()}/deletecomment/${comment.getId()}"
-								method="post">
-								<input type="submit" value="Delete Comment" />
-							</form>
+					</c:if>
+					<c:if
+						test="${comment.getAuthor().getId() == credential.getId() || role == 'admin'}">
+						<form
+							action="${pageContext.request.contextPath}/gallery/${post.getPicture().getName()}/deletecomment/${comment.getId()}"
+							method="post">
+							<input type="submit" value="Delete Comment" />
+						</form>
 					</c:if>
 				</c:if>
 			</c:forEach>

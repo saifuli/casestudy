@@ -11,16 +11,14 @@ import com.casestudy.model.Post;
 import com.casestudy.repository.CredentialRepository;
 import com.casestudy.repository.PostRepository;
 
-
-
 @Service("postService")
 public class PostService implements PostDAO {
 	@Autowired
 	PostRepository postRepository;
-	
+
 	@Autowired
 	CredentialRepository credentialRepository;
-	
+
 	@Override
 	public void addPost(Post post) {
 		postRepository.save(post);
@@ -29,7 +27,7 @@ public class PostService implements PostDAO {
 	@Override
 	public void deletePost(Post post) {
 		postRepository.delete(post);
-		
+
 	}
 
 	@Override
@@ -43,8 +41,8 @@ public class PostService implements PostDAO {
 		});
 		return postsList;
 	}
-	
-	public List<Post> findAllPosts(){
+
+	public List<Post> findAllPosts() {
 		Iterable<Post> posts = postRepository.findAll();
 		List<Post> postsList = new ArrayList<>();
 		posts.forEach(postsList::add);

@@ -27,13 +27,13 @@ import com.casestudy.service.LoginService;
 @Controller
 @Transactional
 public class LoginController {
-	
+
 	@Autowired
 	CredentialRepository credentialRepository;
-	
+
 	@Autowired
 	CredentialService credentialService;
-	
+
 	@RequestMapping("/login")
 	public void initAdmin() {
 

@@ -32,16 +32,16 @@ public class PostController {
 
 	@Autowired
 	PostDAO postDAO;
-	
+
 	@Autowired
 	CredentialService credentialService;
-	
+
 	@Autowired
 	PictureDAO pictureDAO;
-	
+
 	@Autowired
 	CommentDAO commentDAO;
-	
+
 	@RequestMapping(value = "/gallery/{picName}", method = RequestMethod.GET)
 	public ModelAndView getPostInfo(@PathVariable("picName") String picName, Principal principal, Model model) {
 		ModelAndView mav = null;
@@ -49,22 +49,24 @@ public class PostController {
 		Picture picture = pictureDAO.findPictureByName(picName);
 		Post post = postDAO.findPostById(picture.getId());
 		if (model.getAttribute("viewsUpdate") == null)
-			post.setViews(post.getViews()+1);
+			post.setViews(post.getViews() + 1);
 		Credential credential = null;
 
 		mav.addObject("post", postDAO.findPostById(picture.getId()));
 		mav.addObject("picture", picture);
 		if (principal != null) {
 			credential = credentialService.findCredentialByEmail(principal.getName());
-			Set<String> authorities = new HashSet<String>(Arrays.asList(credential.getAuthorities().stream().map(a-> a.getAuthority()).toArray(String[]::new)));
+			Set<String> authorities = new HashSet<String>(Arrays
+					.asList(credential.getAuthorities().stream().map(a -> a.getAuthority()).toArray(String[]::new)));
 			if (authorities.contains("ROLE_ADMIN")) {
 				System.out.println("CONTAINS ADMIN");
 				mav.addObject("role", "admin");
 			}
-			
+
 			mav.addObject("credential", credential);
 			if (model.getAttribute("action") != null && model.getAttribute("action").equals("edit")) {
-				Optional<Comment> optional = commentDAO.findCommentById(Long.parseLong((String) model.getAttribute("commentId")));
+				Optional<Comment> optional = commentDAO
+						.findCommentById(Long.parseLong((String) model.getAttribute("commentId")));
 				if (optional.isPresent()) {
 					Comment comment = optional.get();
 					if (credential.getUser().getId() == comment.getAuthor().getId()) {
@@ -73,11 +75,11 @@ public class PostController {
 					}
 				}
 			}
-				
+
 		}
 		return mav;
 	}
-	
+
 	@RequestMapping(value = "/gallery/edit/{picName}", method = RequestMethod.GET)
 	public ModelAndView editPostInfo(@PathVariable("picName") String picName) {
 		ModelAndView mav = null;
@@ -89,26 +91,25 @@ public class PostController {
 		mav.addObject("action", "edit");
 		return mav;
 	}
-	
+
 	@RequestMapping(value = "/gallery/edit/{picName}", method = RequestMethod.POST)
-	public ModelAndView submitEditPostInfo(@PathVariable("picName") String picName,
-			@ModelAttribute("post") Post post, @ModelAttribute("picture") Picture picture, RedirectAttributes redir) {
+	public ModelAndView submitEditPostInfo(@PathVariable("picName") String picName, @ModelAttribute("post") Post post,
+			@ModelAttribute("picture") Picture picture, RedirectAttributes redir) {
 		ModelAndView mav = null;
-		mav = new ModelAndView("redirect:/gallery/"+picName);
+		mav = new ModelAndView("redirect:/gallery/" + picName);
 		redir.addFlashAttribute("redirect", "redirect");
 		Post p = postDAO.findPostById(pictureDAO.findPictureByName(picName).getId());
 		p.setDescription(post.getDescription());
-		
+
 		redir.addFlashAttribute("viewsUpdate", "viewsUpdate");
 		return mav;
 	}
-	
+
 	@RequestMapping(value = "/gallery/delete/{picName}", method = RequestMethod.POST)
 	public ModelAndView deletePost(@PathVariable("picName") String picName, Principal principal) {
 		Picture picture = pictureDAO.findPictureByName(picName);
 		postDAO.deletePostById(picture.getId());
-		
-		
+
 		return new ModelAndView("redirect:/gallery");
 	}
 }

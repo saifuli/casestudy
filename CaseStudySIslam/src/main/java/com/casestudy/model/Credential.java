@@ -28,11 +28,11 @@ public class Credential {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	
+
 	@Column(name = "username", nullable = false)
 	@NotEmpty
 	private String username;
-	
+
 	@Column(name = "password", nullable = false)
 	@NotEmpty
 	private String password;
@@ -41,17 +41,17 @@ public class Credential {
 	@Email
 	@NotEmpty
 	private String email;
-	
+
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "credential")
 	@Column(name = "authority")
 	private Set<Authorities> authorities = new HashSet<Authorities>();
-	
+
 	@Column(name = "join_date")
 	private Date joinDate;
-	
+
 	@OneToOne(mappedBy = "credential", cascade = CascadeType.ALL)
 	private User user;
-	
+
 	public Credential() {
 	}
 
@@ -68,26 +68,27 @@ public class Credential {
 	public long getId() {
 		return id;
 	}
-	
+
 	public void setId(long id) {
 		this.id = id;
 	}
-	
+
 	public String getUsername() {
 		return username;
 	}
-	
+
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	
+
 	public String getPassword() {
 		return password;
 	}
-	
+
 	public String getEmail() {
 		return email;
 	}
+
 	public void setEmail(String email) {
 		this.email = email;
 	}
@@ -103,10 +104,11 @@ public class Credential {
 	public User getUser() {
 		return user;
 	}
+
 	public void setUser(User user) {
 		this.user = user;
-	} 
-	
+	}
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
@@ -114,13 +116,14 @@ public class Credential {
 	public Set<Authorities> getAuthorities() {
 		return authorities;
 	}
+
 	public void setAuthorities(Set<Authorities> authorities) {
 		this.authorities = authorities;
 	}
-	
+
 //	@Override
 //	public String toString() {
 //		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 //	}
-	
+
 }

@@ -8,6 +8,8 @@ import antlr.collections.List;
 
 public interface CommentDAO {
 	void addComment(Comment comment);
+
 	void deleteCommentById(long id);
+
 	Optional<Comment> findCommentById(long id);
 }

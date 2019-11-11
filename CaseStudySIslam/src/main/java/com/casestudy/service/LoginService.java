@@ -1,7 +1,5 @@
 package com.casestudy.service;
 
-
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,34 +15,34 @@ import com.casestudy.repository.LoginRepository;
 public class LoginService {
 	@Autowired
 	LoginRepository loginRepository;
-	
+
 //	@Autowired
 //	UserRepository userRepository;
-	
+
 	public LoginService(LoginRepository loginRepository) {
 		this.loginRepository = loginRepository;
 	}
-	
+
 	public Credential getLoginbyEmail(String email) {
 		return loginRepository.findByEmail(email);
 	}
-	
-	
+
 	public boolean addCredential(Credential cred) {
-			
+
 		return loginRepository.save(cred) != null;
 	}
-	
+
 	public boolean updateCredential(Credential credential) {
 		return loginRepository.save(credential) != null;
 	}
-	
+
 	public void deleteCredential(Credential credential) {
 		loginRepository.delete(credential);
 	}
-	public List<Credential> getAllCredential(){
+
+	public List<Credential> getAllCredential() {
 		List<Credential> list = new ArrayList<>();
-		loginRepository.findAll().forEach((e)->{
+		loginRepository.findAll().forEach((e) -> {
 			list.add(e);
 		});
 		return list;
@@ -60,5 +58,5 @@ public class LoginService {
 //		});
 //		return loginRepository.findLoginBetweenDateOfBirth(dob1, dob2);
 //	}
-	
+
 }

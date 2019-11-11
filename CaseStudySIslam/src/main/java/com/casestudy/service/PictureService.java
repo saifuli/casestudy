@@ -1,7 +1,5 @@
 package com.casestudy.service;
 
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +8,7 @@ import com.casestudy.model.Picture;
 import com.casestudy.repository.PictureRepository;
 
 @Service("pictureService")
-public class PictureService implements PictureDAO{
+public class PictureService implements PictureDAO {
 
 	@Autowired
 	PictureRepository pictureRepository;
