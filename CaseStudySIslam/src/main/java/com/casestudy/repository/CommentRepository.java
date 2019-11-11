@@ -9,5 +9,5 @@ import com.casestudy.model.Comment;
 public interface CommentRepository extends CrudRepository<Comment, Long> {
 //	void addComment(Comment comment);
 	void deleteCommentById(long id);
-//	Comment findComment(Comment comment);
+//	Comment findCommentById(long id);
 }

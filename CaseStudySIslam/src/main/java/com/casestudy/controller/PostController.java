@@ -3,6 +3,7 @@ package com.casestudy.controller;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.casestudy.dao.CommentDAO;
 import com.casestudy.dao.PictureDAO;
 import com.casestudy.dao.PostDAO;
+import com.casestudy.model.Comment;
 import com.casestudy.model.Credential;
 import com.casestudy.model.Picture;
 import com.casestudy.model.Post;
@@ -61,6 +63,17 @@ public class PostController {
 			}
 			
 			mav.addObject("credential", credential);
+			if (model.getAttribute("action") != null && model.getAttribute("action").equals("edit")) {
+				Optional<Comment> optional = commentDAO.findCommentById(Long.parseLong((String) model.getAttribute("commentId")));
+				if (optional.isPresent()) {
+					Comment comment = optional.get();
+					if (credential.getUser().getId() == comment.getAuthor().getId()) {
+						mav.addObject("action", "edit");
+						mav.addObject("comment", comment);
+					}
+				}
+			}
+				
 		}
 		return mav;
 	}

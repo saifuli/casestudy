@@ -1,5 +1,7 @@
 package com.casestudy.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,12 @@ public class CommentService implements CommentDAO {
 	@Override
 	public void addComment(Comment comment) {
 		commentRepository.save(comment);
+	}
+
+	@Override
+	public Optional<Comment> findCommentById(long id) {
+		// TODO Auto-generated method stub
+		return commentRepository.findById(id);
 	}
 	
 	

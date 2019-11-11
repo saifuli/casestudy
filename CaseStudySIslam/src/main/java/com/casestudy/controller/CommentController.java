@@ -2,6 +2,7 @@ package com.casestudy.controller;
 
 import java.security.Principal;
 import java.util.Date;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -53,6 +54,36 @@ public class CommentController {
 		user.getComments().add(comment);
 		user.setNumOfComments(user.getNumOfComments()+1);
 		redir.addFlashAttribute("viewsUpdate", "viewsUpdate");
+		return mav;
+	}
+	
+	@RequestMapping(value = "/gallery/{picName}/editcomment/{commentId}", method = RequestMethod.GET)
+	public ModelAndView editComment(String comment, @PathVariable("picName") String picName, @PathVariable("commentId") String commentId, RedirectAttributes redir) {
+		ModelAndView mav = new ModelAndView("redirect:/gallery/"+picName);
+		redir.addFlashAttribute("action", "edit");
+		redir.addFlashAttribute("commentId", commentId);
+		return mav;
+	}
+	
+	@RequestMapping(value = "/gallery/{picName}/editcomment/{commentId}/submit", method = RequestMethod.POST)
+	public ModelAndView submitEditedComment(String newComment, @PathVariable("picName") String picName, @PathVariable("commentId") String commentId, RedirectAttributes redir) {
+		ModelAndView mav = new ModelAndView("redirect:/gallery/{picName}/");
+		Optional<Comment> optional = commentDAO.findCommentById(Long.parseLong(commentId));
+		System.out.println("*******************************************************before optional is present");
+		if (optional.isPresent()) {
+			Comment comment = optional.get();
+			System.out.println("*******************************************************found comment");
+			String oldComment = comment.getComment();
+			System.out.println("*******************************************************oldComment " + oldComment);
+			Post post = postDAO.findPostById(pictureDAO.findPictureByName(picName).getId());
+			System.out.println("*******************************************************found post");
+			post.getComments().forEach(c -> { if (c.getComment().equals(oldComment)) c.setComment(newComment);});
+			System.out.println("*******************************************************edited post comment " + newComment);
+			comment.setComment(newComment);
+			System.out.println("*******************************************************edited comment " + newComment);
+			
+			redir.addFlashAttribute("viewsUpdate", "viewsUpdate");
+		}
 		return mav;
 	}
 	
