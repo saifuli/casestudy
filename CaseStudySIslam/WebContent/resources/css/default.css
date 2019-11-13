@@ -1,0 +1,12 @@
+@charset "ISO-8859-1";
+
+html {
+	height: 100vh;
+	width: 100vw;
+}
+
+body {
+	margin: auto;
+	height: 100%;
+	width: 100%;
+}

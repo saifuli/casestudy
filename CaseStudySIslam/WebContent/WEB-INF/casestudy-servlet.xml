@@ -25,5 +25,7 @@
 
 	</bean>
 	<mvc:view-controller path="/landing" view-name="landing"/>
-	<mvc:resources mapping="/images/*" location="/images/" />
+	<mvc:resources mapping="/resources/css/*" location="/resources/css/" />
+	<mvc:resources mapping="/resources/images/*" location="/resources/images/" />
+	<mvc:resources mapping="/imageuploads/**" location="file:///C:\imageuploads\" />
 </beans>

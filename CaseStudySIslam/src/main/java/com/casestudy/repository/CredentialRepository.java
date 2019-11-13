@@ -8,8 +8,12 @@ import com.casestudy.model.Credential;
 
 @Repository
 public interface CredentialRepository extends CrudRepository<Credential, Long> {
+	Credential findCredentialById(long id);
+	
 	Credential findCredentialByEmail(String email);
 
 	Credential findCredentialByUsername(String username);
+	
+	void deleteCredentialByEmail(String email);
 
 }

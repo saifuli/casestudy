@@ -64,7 +64,7 @@ public class GalleryController {
 	}
 
 	@RequestMapping(value = "/gallery/processUpload", method = RequestMethod.POST)
-	public ModelAndView postUpload(String description, @RequestParam("file") MultipartFile file, Principal principal,
+	public ModelAndView postUpload(String title, String description, @RequestParam("file") MultipartFile file, Principal principal,
 			RedirectAttributes redir) {
 		ModelAndView mav = new ModelAndView("redirect:/gallery");
 		Picture picture = new Picture();
@@ -89,8 +89,9 @@ public class GalleryController {
 
 				User user = credentialRepository.findCredentialByEmail(principal.getName()).getUser();
 				user.getPosts().add(post);
-				user.setNumOfPosts(user.getNumOfComments() + 1);
+				user.setNumOfPosts(user.getNumOfPosts() + 1);
 
+				post.setTitle(title);
 				post.setDescription(description);
 				post.setTimestamp(new Date());
 
@@ -103,6 +104,8 @@ public class GalleryController {
 				BufferedOutputStream bostream = new BufferedOutputStream(new FileOutputStream(f));
 				bostream.write(fileBytes);
 				bostream.close();
+				redir.addFlashAttribute("post", post);
+
 
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
@@ -114,7 +117,6 @@ public class GalleryController {
 				System.out.println("File could not write to server.");
 			}
 		}
-		redir.addFlashAttribute("post", post);
 		return mav;
 	}
 }

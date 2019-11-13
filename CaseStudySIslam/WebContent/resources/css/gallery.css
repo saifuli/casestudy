@@ -1,0 +1,51 @@
+@charset "ISO-8859-1";
+
+body {
+	height:100vh;
+	margin-right: 5%;
+	margin-left: 5%;
+	background-image: linear-gradient(to bottom right, rgb(24, 62, 145),
+		rgb(64, 172, 222), rgb(24, 62, 145));
+	background-repeat: no-repeat;
+}
+
+.test {
+	background-color: lightblue;
+}
+
+.test2 {
+	-webkit-box-flex: auto;
+	-ms-flex: auto;
+	flex: auto;
+	width: 100%;
+	margin: .5vw;
+}
+
+img:hover {
+	opacity: .5;
+}
+
+.container-body {
+	border-radius: 5px 5px;
+}
+
+@media ( min-width : 576px) and (max-width: 991.98px) {
+	.test2 img {
+		width: 49.5%;
+		height: auto;
+	}
+}
+
+@media ( max-width : 575.98px) {
+	.test2 img {
+		width: 100%;
+		height: auto;
+	}
+}
+
+@media ( min-width : 992px) {
+	.test2 img {
+		width: 33%;
+		height: auto;
+	}
+}

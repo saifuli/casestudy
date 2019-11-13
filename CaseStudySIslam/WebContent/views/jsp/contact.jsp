@@ -5,11 +5,27 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Contact Us!</title>
+<title>Contact Us - The GALLERY!</title>
+<link href="<c:url value='/resources/css/bootstrap.css' />"
+	rel="stylesheet">
+<link href="<c:url value='/resources/css/gallery.css' />"
+	rel="stylesheet">
+<script src="<c:url value="/resources/js/bootstrap.js"/>" defer></script>
+<script src="<c:url value="/resources/js/jquery-3.1.1.js"/>" defer></script>
+<script src="<c:url value="/resources/js/popper.min.js"/>" defer></script>
 </head>
 <body>
-<jsp:include page="menu.jsp"/>
-
-Thanks for reaching out!
+	<div class="container rounded">
+		<div class="test rounded border border-dark">
+			<jsp:include page="menu.jsp" />
+			<div class="container-fluid">
+				<div class="test2">
+					<h1>
+						Thanks for reaching out!
+					</h1>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>

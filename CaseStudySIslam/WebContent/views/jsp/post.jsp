@@ -7,16 +7,42 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>Post - ${post.getTitle()} - The GALLERY!</title>
+<link href="<c:url value='/resources/css/bootstrap.css' />"
+	rel="stylesheet">
+<link href="<c:url value='/resources/css/gallery.css' />"
+	rel="stylesheet">
+<script src="<c:url value="/resources/js/bootstrap.js"/>" defer></script>
+<script src="<c:url value="/resources/js/jquery-3.1.1.js"/>" defer></script>
+<script src="<c:url value="/resources/js/popper.min.js"/>" defer></script>
 </head>
 <body>
+	<div class="container rounded">
+			<div class="test rounded border border-dark">
+	<jsp:include page="menu.jsp" />
+	<div class="container-fluid">
+	<div class="test2">
 	<p>${post.getPicture().getPath()}</p>
-	<img src="${post.getPicture().getPath()}" />
+	<img src="/imageuploads/${post.getPicture().getName()}.jpg" />
 	<br>
 	<p>${post.getDescription()}</p>
 	<%-- <c:if test="${post.getLikes() > 0}"> --%>
 	<p>Likes: ${post.getLikes()}</p>
-	<p>Views: ${post.getViews()}</p>
+	
+	<c:if test="${pageContext.request.userPrincipal.name == credential.getEmail() && liked == null}">
+	<form
+			action="${pageContext.request.contextPath}/gallery/${post.getPicture().getName()}/like"
+			method="post">
+			<input type="submit" value="Like" />
+	</form>
+	</c:if>
+	<c:if test="${pageContext.request.userPrincipal.name == credential.getEmail() && liked != null}">
+	<form
+			action="${pageContext.request.contextPath}/gallery/${post.getPicture().getName()}/unlike"
+			method="post">
+			<input type="submit" value="UnLike" />
+	</form>
+	</c:if>
 	<c:if
 		test="${credential != null && post.getAuthor().getId() == credential.getId()}">
 
@@ -80,5 +106,9 @@
 			<input type="submit" value="Submit Comment" />
 		</form>
 	</c:if>
+	</div>
+	</div>
+	</div>
+	</div>
 </body>
 </html>

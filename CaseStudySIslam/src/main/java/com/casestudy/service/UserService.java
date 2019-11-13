@@ -1,5 +1,7 @@
 package com.casestudy.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,12 @@ public class UserService implements UserDAO {
 		// TODO Auto-generated method stub
 		userRepository.delete(user);
 
+	}
+
+	@Override
+	public User findUserById(long id) {
+		// TODO Auto-generated method stub
+		return userRepository.findUserById(id);
 	}
 
 }

@@ -16,11 +16,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.casestudy.dao.CommentDAO;
 import com.casestudy.dao.PictureDAO;
 import com.casestudy.dao.PostDAO;
+import com.casestudy.dao.UserDAO;
 import com.casestudy.model.Comment;
 import com.casestudy.model.Credential;
 import com.casestudy.model.Post;
 import com.casestudy.model.User;
 import com.casestudy.service.CredentialService;
+import com.casestudy.service.UserService;
 
 @Controller
 @Transactional
@@ -36,6 +38,9 @@ public class CommentController {
 
 	@Autowired
 	CommentDAO commentDAO;
+	
+	@Autowired
+	UserDAO userDAO;
 
 	@RequestMapping(value = "/gallery/{picName}/submitcomment", method = RequestMethod.POST)
 	public ModelAndView submitComment(String postComment, @PathVariable("picName") String picName, Principal principal,
@@ -70,9 +75,8 @@ public class CommentController {
 	public ModelAndView submitEditedComment(String newComment, @PathVariable("picName") String picName,
 			@PathVariable("commentId") String commentId, RedirectAttributes redir) {
 		ModelAndView mav = new ModelAndView("redirect:/gallery/{picName}/");
-		Optional<Comment> optional = commentDAO.findCommentById(Long.parseLong(commentId));
-		if (optional.isPresent()) {
-			Comment comment = optional.get();
+		Comment comment = commentDAO.findCommentById(Long.parseLong(commentId));
+		
 			String oldComment = comment.getComment();
 			Post post = postDAO.findPostById(pictureDAO.findPictureByName(picName).getId());
 			post.getComments().forEach(c -> {
@@ -82,7 +86,7 @@ public class CommentController {
 			comment.setComment(newComment);
 
 			redir.addFlashAttribute("viewsUpdate", "viewsUpdate");
-		}
+		
 		return mav;
 	}
 
@@ -92,9 +96,11 @@ public class CommentController {
 		ModelAndView mav = new ModelAndView("redirect:/gallery/" + picName);
 
 		Post post = postDAO.findPostById(pictureDAO.findPictureByName(picName).getId());
+		Comment comment = commentDAO.findCommentById(Long.parseLong(commentId));
+		User user = userDAO.findUserById(comment.getAuthor().getId());
 		System.out.println(commentId);
 		post.getComments().removeIf(c -> c.getId() == Long.parseLong(commentId));
-
+		user.setNumOfComments(user.getNumOfComments()-1);
 		commentDAO.deleteCommentById(Long.parseLong(commentId));
 		redir.addFlashAttribute("viewsUpdate", "viewsUpdate");
 		return mav;

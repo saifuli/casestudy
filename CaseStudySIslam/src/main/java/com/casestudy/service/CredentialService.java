@@ -29,10 +29,18 @@ public class CredentialService implements UserDetailsService {
 //		return userRepository.findByUsername(user.getUsername());
 	}
 
+	public Credential findCredentialById(long id) {
+		return credentialRepository.findCredentialById(id);
+	}
+	
 	public Credential findCredentialByEmail(String email) {
 		return credentialRepository.findCredentialByEmail(email);
 	}
-
+	
+	public void deleteCredentialByEmail(String email) {
+		credentialRepository.deleteCredentialByEmail(email);
+	}
+	
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub

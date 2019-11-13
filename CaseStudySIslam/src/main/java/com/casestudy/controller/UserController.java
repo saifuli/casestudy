@@ -1,102 +1,106 @@
 package com.casestudy.controller;
-//package com.casestudy.saiful.islam.controller;
-//
-//import java.text.SimpleDateFormat;
-//import java.util.Date;
-//import java.util.List;
-//
-//import org.springframework.beans.propertyeditors.CustomDateEditor;
-//import org.springframework.format.annotation.DateTimeFormat;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.web.bind.WebDataBinder;
-//import org.springframework.web.bind.annotation.InitBinder;
-//import org.springframework.web.bind.annotation.ModelAttribute;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RequestMethod;
-//import org.springframework.web.bind.annotation.RequestParam;
-//import org.springframework.web.servlet.ModelAndView;
-//import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-//
-//import com.profile.model.Login;
-//import com.profile.service.loginService.LoginService;
-//
-//@Controller
-//public class UserController {
-//
-//	LoginService loginService;
-//
-//	public UserController(LoginService loginService) {
-//		this.loginService = loginService;
-//	}
-//
-//	@InitBinder
-//	public void initBinder(WebDataBinder binder) {
-//		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//		binder.registerCustomEditor(Date.class, "dateOfBirth", new CustomDateEditor(sdf, false));
-//	}
-//
-//	@RequestMapping(value = "/users", method = RequestMethod.GET)
-//	public ModelAndView returnUserList() {
-//		ModelAndView mav = null;
-//		loginService.getAllLogin().forEach((e) -> {
-//			System.out.println(e.toString());
-//		});
-//
-//		mav = new ModelAndView("users");
-//		mav.addObject("usersList", loginService.getAllLogin());
-//		return mav;
-//	}
-//
-//	@RequestMapping(value = "/users/filter", method = RequestMethod.POST)
-//	public ModelAndView returnUserListBetweenDates(
-//			@RequestParam("date1") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date1,
-//			@RequestParam("date2") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date2) {
-//		ModelAndView mav = null;
-//		System.out.println("In between");
-//		System.out.println("Date1: " + date1);
-//		System.out.println("Date1: " + date2);
-//		if (date1 == null || date2 == null)
-//			return new ModelAndView("redirect:/users");
-//		mav = new ModelAndView("users");
-//		List<Login> filteredList = loginService.findByStartDateBetween(date1, date2);
-//		if (filteredList.size() == 0)
-//			mav.addObject("message", "Results not found for dates between " + date1 + " and " + date2);
-//		else {
-//			mav.addObject("usersList", filteredList);
-//			mav.addObject("size", "Found " + filteredList.size());
-//		}
-//		mav.addObject("date1", date1);
-//		mav.addObject("date2", date2);
-//		return mav;
-//	}
-//
-//	@RequestMapping(value = "/user", method = RequestMethod.GET)
-//	public ModelAndView returnUserInfo(@RequestParam("u") String email) {
-//		ModelAndView mav = null;
-//		mav = new ModelAndView("user");
-//		Login login = loginService.getLoginbyEmail(email);
-//		mav.addObject("userInfo", login);
-//		return mav;
-//	}
-//
-//	@RequestMapping(value = "/user/edit", method = RequestMethod.GET)
-//	public ModelAndView editUserInfo(@RequestParam("u") String email,
-//			@ModelAttribute("userCredentialFormObj") Login login) {
-//		ModelAndView mav = null;
-//		mav = new ModelAndView("userCredentialForm");
-//		mav.addObject("userCredentialFormObj", loginService.getLoginbyEmail(email));
-//		mav.addObject("action", "update");
-//		// mav.addObject("userObj", new Login());
-//		return mav;
-//	}
-//
-//	@RequestMapping(value = "/user/delete", method = RequestMethod.GET)
-//	public ModelAndView delete(@RequestParam("u") String email, RedirectAttributes redirect) {
-//
-//		System.out.println("delete mapping");
-//		loginService.deleteLogin(loginService.getLoginbyEmail(email));
-//		redirect.addFlashAttribute("message", "user successfully deleted");
-//		return new ModelAndView("redirect:/users");
-//	}
-//
-//}
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.casestudy.model.Credential;
+import com.casestudy.model.User;
+import com.casestudy.service.CredentialService;
+
+@Controller
+@Transactional
+public class UserController {
+
+	@Autowired
+	CredentialService credentialService;
+
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		binder.registerCustomEditor(Date.class, "dateOfBirth", new CustomDateEditor(sdf, false));
+	}
+
+	@RequestMapping(value = "/user/{userId:.+}", method = RequestMethod.GET)
+	public ModelAndView returnUserInfo(@PathVariable("userId") String email) {
+		ModelAndView mav = null;
+		mav = new ModelAndView("user");
+		System.out.println(email);
+		Credential credential = credentialService.findCredentialByEmail(email);
+		System.out.println("*******************" + credential.getEmail());
+		User user = credential.getUser();
+		mav.addObject("credential", credential);
+		mav.addObject("user", user);
+		return mav;
+	}
+
+	@RequestMapping(value = "/user/edit/{userId:.+}", method = RequestMethod.GET)
+	public ModelAndView editUserInfo(@PathVariable("userId") String email,
+			@ModelAttribute("userCredentialFormObj") Credential cred, @ModelAttribute("userFormObj") User u) {
+		ModelAndView mav = null;
+		mav = new ModelAndView("useredit");
+		Credential credential = credentialService.findCredentialByEmail(email);
+		User user = credential.getUser();
+		mav.addObject("userCredentialFormObj", credential);
+		mav.addObject("userObjForm", user);
+		mav.addObject("action", "update");
+		// mav.addObject("userObj", new Login());
+		return mav;
+	}
+
+	@RequestMapping(value = "/updateUserCredential", method = RequestMethod.POST)
+	public ModelAndView updateUserInfo(@Valid @ModelAttribute("userCredentialFormObj") Credential cred,
+			BindingResult br1, @Valid @ModelAttribute("userFormObj") User u, BindingResult br2,
+			@RequestParam("confPassword") String confPassword, RedirectAttributes redir) {
+		ModelAndView mav = null;
+		mav = new ModelAndView("redirect:/user/"+cred.getEmail());
+		Credential credential = credentialService.findCredentialByEmail(cred.getEmail());
+		User user = credential.getUser();
+		if (br1.hasErrors() || br2.hasErrors()) {
+			if (br1.hasErrors() && br2.hasErrors())
+				redir.addFlashAttribute("message", "Name and password must not be empty");
+			else if (br1.hasErrors())
+				redir.addFlashAttribute("message", "Password must not be empty");
+			else if (br2.hasErrors())
+				redir.addFlashAttribute("message", "Name must not be empty");
+			return new ModelAndView("redirect:/user/edit/"+credential.getEmail());
+		}
+		else if (!cred.getPassword().equals(confPassword)) {
+			redir.addFlashAttribute("message", "Password must be the same");
+			return new ModelAndView("redirect:/user/edit/"+credential.getEmail());
+		}
+		user.setName(u.getName());
+		credential.setPassword(new BCryptPasswordEncoder().encode(cred.getPassword()));
+		// mav.addObject("userObj", new Login());
+		return mav;
+	}
+
+	@RequestMapping(value = "/user/delete/{userId:.+}", method = RequestMethod.POST)
+	public ModelAndView delete(@PathVariable("userId") String email, RedirectAttributes redirect) {
+
+		System.out.println("delete mapping");
+		credentialService.deleteCredentialByEmail(email);
+		redirect.addFlashAttribute("message", "user successfully deleted");
+		SecurityContextHolder.getContext().setAuthentication(null);
+		return new ModelAndView("redirect:/landing");
+	}
+
+}

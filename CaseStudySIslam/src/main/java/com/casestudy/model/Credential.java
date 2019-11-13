@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
@@ -29,17 +30,20 @@ public class Credential {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
+	@Valid
 	@Column(name = "username", nullable = false)
-	@NotEmpty
+	@NotEmpty (message = "username must not be empty")
 	private String username;
-
+	
+	@Valid
 	@Column(name = "password", nullable = false)
-	@NotEmpty
+	@NotEmpty (message = "password must not be empty")
 	private String password;
-
+	
+	@Valid
 	@Column(name = "email", unique = true, nullable = false)
 	@Email
-	@NotEmpty
+	@NotEmpty (message = "email must not be empty")
 	private String email;
 
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "credential")
@@ -49,7 +53,8 @@ public class Credential {
 	@Column(name = "join_date")
 	private Date joinDate;
 
-	@OneToOne(mappedBy = "credential", cascade = CascadeType.ALL)
+	@Valid
+	@OneToOne(mappedBy = "credential", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private User user;
 
 	public Credential() {
@@ -120,6 +125,12 @@ public class Credential {
 	public void setAuthorities(Set<Authorities> authorities) {
 		this.authorities = authorities;
 	}
+
+//	@Override
+//	public String toString() {
+//		return "Credential [id=" + id + ", username=" + username + ", password=" + password + ", email=" + email
+//				+ ", authorities=" + authorities + ", joinDate=" + joinDate + ", user=" + user + "]";
+//	}
 
 //	@Override
 //	public String toString() {

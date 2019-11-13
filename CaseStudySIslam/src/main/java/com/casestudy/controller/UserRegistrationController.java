@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.casestudy.dao.UserDAO;
 import com.casestudy.model.Authorities;
@@ -65,13 +66,13 @@ public class UserRegistrationController {
 	
 	
 	@RequestMapping(value = "/processUserCredential", method = RequestMethod.POST)
-	public ModelAndView loginProcess(@Valid @ModelAttribute("userCredentialFormObj") Credential cred,
-			@ModelAttribute("userFormObj") User user, BindingResult br,
-			@RequestParam("confPassword") String confPassword) {
+	public ModelAndView loginProcess(@Valid @ModelAttribute("userCredentialFormObj") Credential cred, BindingResult br1,
+			@Valid @ModelAttribute("userFormObj") User user, BindingResult br2,
+			@RequestParam("confPassword") String confPassword, RedirectAttributes redir) {
 		Credential credential = credentialRepository.findCredentialByEmail(cred.getEmail());
 		ModelAndView mav = null;
 		System.out.println("outside");
-		if (!br.hasErrors() || (br.getFieldValue("user") == null)) {
+		if (!br1.hasErrors() && !br2.hasErrors()) {
 			System.out.println("inside no errors");
 			if (cred.getPassword().equals(confPassword)) {
 				System.out.println("password is the same");
@@ -101,11 +102,27 @@ public class UserRegistrationController {
 					
 					
 					System.out.println("registering");
-					mav = new ModelAndView("registerConfirmation");
-					mav.addObject("credential", credentialRepository.findCredentialByEmail(credential.getEmail()));
-					mav.addObject("message", "Credential successfully created!");
+					mav = new ModelAndView("redirect:/login");
+//					mav.addObject("credential", credentialRepository.findCredentialByEmail(credential.getEmail()));
+					redir.addFlashAttribute("message", "Credential successfully created!");
 					return mav;
-				} else {
+				}
+				
+				else if (credential.getEmail().equals(cred.getEmail()) && credential.getUsername().equals(cred.getUsername())) {
+					mav = new ModelAndView("redirect:/register");
+					redir.addFlashAttribute("message", "Email and username is already registered.");
+				}
+				
+				else if (credential.getEmail().equals(cred.getEmail())) {
+					mav = new ModelAndView("redirect:/register");
+					redir.addFlashAttribute("message", "Email is already registered.");
+				}
+				
+				else if (credential.getUsername().equals(cred.getUsername())) {
+					mav = new ModelAndView("redirect:/register");
+					redir.addFlashAttribute("message", "Username is already registered.");
+				}
+				else {
 					if (!confPassword.equals("")) {
 						System.out.println("pass equals");
 						System.out.println("updating");
@@ -116,7 +133,7 @@ public class UserRegistrationController {
 						System.out.println(credential.toString());
 					}
 					credentialService.saveCredential(credential);
-					mav = new ModelAndView("redirect:/user?u=" + credential.getEmail());
+					mav = new ModelAndView("redirect:/user/" + credential.getEmail());
 				}
 			} else {
 				System.out.println("password is not the same");
@@ -125,7 +142,8 @@ public class UserRegistrationController {
 			}
 		} else {
 			System.out.println("has errors");
-			System.out.println(br.toString());
+			System.out.println(br1.toString());
+			System.out.println(br2.toString());
 			mav = new ModelAndView("redirect:/register");
 		}
 		return mav;

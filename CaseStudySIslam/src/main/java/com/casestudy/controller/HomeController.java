@@ -50,8 +50,8 @@ public class HomeController {
 	@RequestMapping("/home")
 	public ModelAndView getHome(Model model, Principal principal) {
 		ModelAndView mav = new ModelAndView("home");
-		if (principal.getName() == null)
-			return new ModelAndView("redirect:/login");
+		if (principal == null)
+			return mav;
 
 		Credential credential = credentialRepository.findCredentialByEmail(principal.getName());
 		mav.addObject("credential", credential);

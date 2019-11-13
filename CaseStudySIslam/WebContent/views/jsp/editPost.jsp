@@ -7,13 +7,15 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>Edit - ${post.getTitle()} - The GALLERY!</title>
 </head>
 <body>
 	<p>${picture.getName() }</p>
 	<form:form method="POST" id="picture" modelAttribute="picture"
 		action="${pageContext.request.contextPath}/gallery/edit/${picture.getName()}">
 		<table>
+			<tr>
+				<td><h3>${post.getTitle()}</h3></td>
 			<tr>
 				<td><img src="${picObj.getPath()}"/></td>
 			</tr>
@@ -28,7 +30,6 @@
 
 			</form:form>
 			<tr>
-
 					<td><form:button name="updatePost" id="updatePost">Update Post</form:button></td>
 
 			</tr>

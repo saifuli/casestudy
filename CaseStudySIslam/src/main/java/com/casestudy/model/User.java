@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import javax.persistence.Table;
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -31,14 +32,14 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-//	@PrimaryKeyJoinColumn(name = "id", referencedColumnName = "id")
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@MapsId
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Credential credential;
 
+	@Valid
 	@Column(name = "name", nullable = false)
-	@NotEmpty
+	@NotEmpty(message = "Name must not be empty.")
 	private String name;
 	
 	@OneToMany(mappedBy = "author", 
@@ -134,6 +135,13 @@ public class User {
 	public void setNumOfComments(int numOfComments) {
 		this.numOfComments = numOfComments;
 	}
+
+//	@Override
+//	public String toString() {
+//		return "User [id=" + id + ", credential=" + credential + ", name=" + name + ", posts=" + posts + ", comments="
+//				+ comments + ", authorityTier=" + authorityTier + ", numOfPosts=" + numOfPosts + ", numOfComments="
+//				+ numOfComments + "]";
+//	}
 	
 //	@Override
 //	public String toString() {

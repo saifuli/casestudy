@@ -16,11 +16,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import com.sun.istack.internal.NotNull;
 
 
 
@@ -38,6 +41,11 @@ public class Post {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Picture picture;
 	
+	@Column(name = "title")
+	@NotEmpty
+	private String title;
+	
+	@NotEmpty
 	@Column(name = "description")
 	private String description;
 	
@@ -45,7 +53,6 @@ public class Post {
 	@Column(name = "comments")
 	private List<Comment> comments;
 	
-	private int views;
 	private int likes;
 	
 	@Column(name = "timestamp", nullable = false)
@@ -76,6 +83,14 @@ public class Post {
 		this.picture = picture;
 	}
 
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
 	public String getDescription() {
 		return description;
 	}
@@ -90,14 +105,6 @@ public class Post {
 
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
-	}
-
-	public int getViews() {
-		return views;
-	}
-
-	public void setViews(int views) {
-		this.views = views;
 	}
 
 	public int getLikes() {
